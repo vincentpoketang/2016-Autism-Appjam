@@ -2,4 +2,18 @@
 	<h1>Home Page 4 Life</h1>
 
 	<p>{{ tagline }}</p>
+
+	<button type="button" class="btn btn-success btn-lg text-center" ng-click="changeTagline()" >
+		Click Me!!!
+	</button>
+
+    <button type="button" class="btn btn-success btn-lg text-center" ng-click="changeTagline()" >
+        Click Me To Hide!!!
+    </button>
+
+    <ul ng-repeat="element in list" ng-show="showlist">
+        <li>something</li>
+        <li>something2</li>
+    </ul>
+
 </div>
