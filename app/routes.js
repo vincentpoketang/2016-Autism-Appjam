@@ -1,4 +1,5 @@
 var User = require('./models/user');
+var Question = require('./models/question');
 var mongoose = require('mongoose');
 
 module.exports = function(app) {
@@ -80,6 +81,46 @@ module.exports = function(app) {
             res.json(users); // return all users in JSON format
         });
     });
+
+    app.get('/api/questions', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.find(function(err, questions) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(questions); // return all users in JSON format
+        });
+    });
+
+    app.get('/api/questions/:questionId', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.findById(req.params.questionId, function(err, question) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(question); // return all users in JSON format
+        });
+    });
+
+    app.post('/api/questions', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.create(req.body, function(err, question) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(question); // return all users in JSON format
+        });
+    });
+
 	// frontend routes =========================================================
 	// route to handle all angular requests
 	app.get('*', function(req, res) {
