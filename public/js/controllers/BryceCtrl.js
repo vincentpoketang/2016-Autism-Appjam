@@ -1,55 +1,38 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
+                                           
+    $scope.toggleDialogue = function() {
+        $name = 'Bryce';
+        $text = 'Hello ' + $name + '! Today I wanted to eat some of my apples, but I wanted to know how many I should eat.';
 
-	$scope.tagline = 'WHY ARENT MY AJAX CALLS WORKING';
-	$scope.showQuestion = false;
-
-    $scope.answers = [{text:"Good",checked: false},
-        {text:"Sad",checked:false},
-        {text:"Weird",checked:false},
-        {text:"Okay",checked:false}];
-
-    $scope.bubbleText = "Hello There!"
-    $scope.currentAnswer = "";
-    $scope.response = "";
-	$scope.changeTagline= function() {
-		var request = {
-			method: 'GET',
-			url: "http://localhost:3000/api/users/570ded693cf35fa715db7262"
-		};
-		$http(request).
-		success(function (data) {
-			$scope.tagline = data.name;
-		}).error(function (data) {
-			console.log('ERROR: Could not find user');
-		});
-	};
-
-	$scope.toggleQuestion = function() {
-		$scope.showQuestion = true;
-        $scope.bubbleText = "How are you feeling today?"
-	};
-
-    $scope.respond = function(answer) {
-        if ($scope.currentAnswer == "Good")
-            $scope.bubbleText = "I'm feeling great as well!";
-        else if ($scope.currentAnswer == "Sad")
-            $scope.bubbleText = "Awwwww...why are you sad? :(";
-        else if ($scope.currentAnswer == "Weird")
-            $scope.bubbleText = "Today does feel a bit strange...";
-        else if ($scope.currentAnswer == "Okay")
-            $scope.bubbleText = "Ok.";
-        else
-            $scope.bubbleText = "I don't quite understand.";
+        $scope.showDialogue = true;
+        $scope.showNext = true;
+        $scope.showClose = false;
+        $scope.dialogue = $text;
     };
-
-    $scope.updateSelection = function(position, answers) {
-        angular.forEach(answers, function(answer, index) {
-            if(position != index)
-                answer.checked = false;
-        })
+                                           
+    $scope.toggleQuestion = function() {
+        $scope.dialogue = 'I bought 5 apples yesterday. If I eat 2 apples today, how many apples will I have left tomorrow?';
+        $scope.showNext = false;
+        $scope.showChoices = true;
+    };
+                                           
+    $scope.toggleClose = function() {
+        $scope.showDialogue = false;
+        $scope.showChoices = false;
+    };
+                                           
+    $scope.response = function(answer) {
+        if (answer == 0) {
+            $scope.dialogue = '1 apple? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+        } else if (answer == 1) {
+            $scope.dialogue = '2 apples? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+        } else if (answer == 2) {
+            $scope.dialogue = '3 apples? Yeah that\s right! Because 5 minus 2 is 3.';
+            $scope.showChoices = false;
+            $scope.showClose = true;
+        } else if (answer == 3) {
+            $scope.dialogue = '4 apples? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+        }
     }
-
-    $scope.changeCurrent = function(answer) {
-        $scope.currentAnswer = answer.text;
-    }
+                                           
 });
