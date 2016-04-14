@@ -1,19 +1,29 @@
 <div class="jumbotron text-center">
-	<h1>Home Page 4 Life</h1>
+	<h1>CLICK ME!!!!!</h1>
 
-	<p>{{ tagline }}</p>
+	<!--<p>{{ tagline }}</p>-->
 
-	<button type="button" class="btn btn-success btn-lg text-center" ng-click="changeTagline()" >
-		Click Me!!!
-	</button>
+	<!--<button type="button" class="btn btn-success btn-lg text-center" ng-click="changeTagline()" >-->
+		<!--Click Me!!!-->
+	<!--</button>-->
 
-    <button type="button" class="btn btn-success btn-lg text-center" ng-click="changeTagline()" >
-        Click Me To Hide!!!
-    </button>
+    <p class="speech">{{bubbleText}}</p>
+    <img src="..\assets\bubble.png" class="box rotate moveDown" height="100" width="100" ng-click="toggleQuestion()">
+    <span ng-show="showQuestion">
+        <table>
+            <tr ng-repeat="answer in answers">
+                <td>
+                    <label class="pull-left"><input type="checkbox" ng-model="answer.checked" ng-click="updateSelection($index, answers);changeCurrent(answer)" /> {{answer.text}}</label>
+                </td>
+            </tr>
+        </table>
 
-    <ul ng-repeat="element in list" ng-show="showlist">
-        <li>something</li>
-        <li>something2</li>
-    </ul>
+        <button type="button" class="btn btn-primary text-center" ng-click="respond()" >
+            Submit
+        </button>
+
+    </span>
+
+
 
 </div>
