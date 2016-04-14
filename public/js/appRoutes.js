@@ -11,7 +11,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 		.when('/users', {
 			templateUrl: 'views/user.html',
 			controller: 'UserController'
-		});
+		})
+                                        
+        .when('/bryce', {
+              templateUrl: 'views/bryce.html',
+              controller: 'BryceController'
+      });
 
 	$locationProvider.html5Mode(true);
 

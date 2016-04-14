@@ -1,4 +1,4 @@
-angular.module('MainCtrl', []).controller('MainController', function($scope, $http) {
+angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
 
 	$scope.tagline = 'WHY ARENT MY AJAX CALLS WORKING';
 	$scope.showQuestion = false;
