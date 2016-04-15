@@ -65,7 +65,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     }
                                            
     $scope.frResponse = function() {
-        $scope.dialogue = $scope.answer + "? That's my favorite color too!";
+        $scope.dialogue = $scope.frAnswer + "? That's my favorite color too!";
         $scope.frAnswer = "";
         $scope.showEntry = false;
         $scope.showClose = true;
