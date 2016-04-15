@@ -3,19 +3,74 @@
  */
 angular.module('KevinCtrl', []).controller('KevinController', function($scope, $http) {
 
+
     $request = {
         method: 'GET',
-        url: "http://localhost:3000/api/questions/57103f55b1b79aa3039716b9"
+        url: "http://localhost:3000/api/questions/57104851b43aa6cc0f531080"
     };
+
+
+    //totalApples is 4-20
+    var totalApples = Math.floor((Math.random() * 17) + 4);
+    //eatenApples is 0-totalApples
+    var eatenApples = Math.floor((Math.random() * totalApples+1));
+    //correct answer is:
+    var correctAnswer = totalApples - eatenApples;
+
+
+    // RETURNS PSEUDO-RANDOM NUMBER IN RANGE min...max
+    function random_number(min,max) {
+
+        return (Math.round((max-min) * Math.random() + min));
+    }
+
+    // CREATE AND FILL NUMBER ARRAY WITH UNIQUE RANDOM NUMBERS between 0-20 and one is the correct answer
+    var myNumArray = create_unique_random_array(4,0,totalApples);
+
+    function create_unique_random_array(num_elements,min,max) {
+
+        var temp, nums = new Array;
+
+        for (var element=0; element<num_elements; element++) {
+
+            //IMPORTANT: DON'T FORGET THE SEMI-COLON AT THE END
+            while((temp=number_found(random_number(min,max),nums))==-1);
+            nums[element] = temp;
+        }
+        if (nums.indexOf(correctAnswer) == -1) {
+            nums[Math.floor((Math.random()*4))] = correctAnswer;
+        }
+        return (nums);
+    }
+
+    function number_found (random_number,number_array) {
+
+        for (var element=0; element<number_array.length; element++) {
+
+            if (random_number==number_array[element]) {
+                return (-1);
+            }
+        }
+
+        return (random_number);
+    }
+
+    console.log(totalApples);
+    console.log(eatenApples);
+    console.log(correctAnswer);
+    console.log(myNumArray);
+
+
 
     $http($request)
         .success(function (data) {
+
             $type = data.type;
             $openingText = data.openingText;
-            $questionText = data.questionText;
-            $correctAnswer = data.correctAnswer;
+            $questionText = "I bought "+totalApples +" apples yesterday. If I eat "+eatenApples +" apples today, how many apples will I have left tomorrow?";
+            $correctAnswer = correctAnswer;
             $response = data.response;
-            $choices = data.choices;
+            $choices = myNumArray;
         })
         .error(function (data) {
             console.log('ERROR: Could not retrieve questions.');
@@ -47,7 +102,15 @@ angular.module('KevinCtrl', []).controller('KevinController', function($scope, $
     };
 
     $scope.response = function(answer) {
-        if (answer == 0) {
+        if (answer == myNumArray.indexOf(correctAnswer)) {
+            $scope.dialogue = "correct";
+            $scope.showChoices = false;
+            $scope.showClose = true;
+        }
+        else{
+            $scope.dialogue = "wrong";
+        }
+        /*if (answer == 0) {
             $scope.dialogue = $response[0];
         } else if (answer == 1) {
             $scope.dialogue = $response[1];
@@ -59,7 +122,7 @@ angular.module('KevinCtrl', []).controller('KevinController', function($scope, $
         if (answer == $correctAnswer) {
             $scope.showChoices = false;
             $scope.showClose = true;
-        }
+        }*/
     }
 
 });
