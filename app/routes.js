@@ -82,6 +82,7 @@ module.exports = function(app) {
         });
     });
 
+    //Question routes
     app.get('/api/questions', function(req, res) {
         // use mongoose to get all users in the database
         Question.find(function(err, questions) {

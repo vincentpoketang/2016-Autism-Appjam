@@ -1,0 +1,37 @@
+<style>
+    .choice {
+        width: 100%;
+        margin: 5px;
+    }
+</style>
+
+<div class="jumbotron text-center" style="background-image: url(http://cdn.home-designing.com/wp-content/uploads/2009/10/white-and-black-room.jpg); height:600px;">
+
+    <div class="well" ng-show="showDialogue">
+        <p>{{dialogue}}</p>
+        <button class="btn btn-default" ng-show="showNext" ng-click="toggleQuestion()">Next</button>
+        <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
+    </div>
+
+    <img src="..\assets\bubble.png" class="box rotate moveDown" height="100" width="100" ng-click="toggleDialogue()">
+
+    <div class="well" ng-show="showChoices">
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-default choice" ng-click="response(0)">{{choice1}}</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-default choice" ng-click="response(1)">{{choice2}}</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-default choice" ng-click="response(2)">{{choice3}}</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-default choice" ng-click="response(3)">{{choice4}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -11,7 +11,7 @@ module.exports = mongoose.model('Question', {
     openingText: {type : String},
     questionText: {type : String},
     choices:[],
-    correctAnswer:Number,
+    correctAnswer: Number,
     response:{
         0: String,
         1: String,

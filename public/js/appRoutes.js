@@ -12,6 +12,21 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			templateUrl: 'views/user.html',
 			controller: 'UserController'
 		})
+
+		.when('/kevin', {
+			templateUrl: 'views/kevin.html',
+			controller: 'KevinController'
+		})
+
+		.when('/arzang', {
+			templateUrl: 'views/arzang.html',
+			controller: 'ArzangController'
+		})
+
+		.when('/vincent', {
+			templateUrl: 'views/vincent.html',
+			controller: 'VincentController'
+		})
                                         
         .when('/bryce', {
               templateUrl: 'views/bryce.html',
