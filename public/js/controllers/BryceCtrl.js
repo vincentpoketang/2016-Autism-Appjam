@@ -1,8 +1,26 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
                                            
+    $request = {
+        method: 'GET',
+        url: "http://localhost:3000/api/questions/57103f55b1b79aa3039716b9"
+    };
+                   
+    $http($request)
+        .success(function (data) {
+            $type = data.type;
+            $openingText = data.openingText;
+            $questionText = data.questionText;
+            $correctAnswer = data.correctAnswer;
+            $response = data.response;
+            $choices = data.choices;
+        })
+        .error(function (data) {
+            console.log('ERROR: Could not retrieve questions.');
+    });
+                                           
     $scope.toggleDialogue = function() {
         $name = 'Bryce';
-        $text = 'Hello ' + $name + '! Today I wanted to eat some of my apples, but I wanted to know how many I should eat.';
+        $text = 'Hello ' + $name + '! ' + $openingText;
 
         $scope.showDialogue = true;
         $scope.showNext = true;
@@ -11,8 +29,12 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     };
                                            
     $scope.toggleQuestion = function() {
-        $scope.dialogue = 'I bought 5 apples yesterday. If I eat 2 apples today, how many apples will I have left tomorrow?';
+        $scope.dialogue = $questionText;
         $scope.showNext = false;
+        $scope.choice1 = $choices[0];
+        $scope.choice2 = $choices[1];
+        $scope.choice3 = $choices[2];
+        $scope.choice4 = $choices[3];
         $scope.showChoices = true;
     };
                                            
@@ -23,15 +45,17 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                                            
     $scope.response = function(answer) {
         if (answer == 0) {
-            $scope.dialogue = '1 apple? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+            $scope.dialogue = $response[0];
         } else if (answer == 1) {
-            $scope.dialogue = '2 apples? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+            $scope.dialogue = $response[1];
         } else if (answer == 2) {
-            $scope.dialogue = '3 apples? Yeah that\s right! Because 5 minus 2 is 3.';
-            $scope.showChoices = false;
-            $scope.showClose = true;
+            $scope.dialogue = $response[2];
         } else if (answer == 3) {
-            $scope.dialogue = '4 apples? Hm that doesn\'t seem correct. Let me think, what is 5 minus 2...';
+            $scope.dialogue = $response[3];
+        }
+        if (answer == $correctAnswer) {
+           $scope.showChoices = false;
+           $scope.showClose = true;
         }
     }
                                            
