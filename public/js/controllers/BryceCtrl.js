@@ -2,7 +2,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                                            
     $request = {
         method: 'GET',
-        url: "http://localhost:3000/api/questions/57103f55b1b79aa3039716b9"
+        url: "http://localhost:3000/api/questions/571058e8b1b79aa3039716ba"
     };
                    
     $http($request)
@@ -31,11 +31,16 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     $scope.toggleQuestion = function() {
         $scope.dialogue = $questionText;
         $scope.showNext = false;
-        $scope.choice1 = $choices[0];
-        $scope.choice2 = $choices[1];
-        $scope.choice3 = $choices[2];
-        $scope.choice4 = $choices[3];
-        $scope.showChoices = true;
+        if ($type == "MC") {
+            $scope.choice1 = $choices[0];
+            $scope.choice2 = $choices[1];
+            $scope.choice3 = $choices[2];
+            $scope.choice4 = $choices[3];
+            $scope.showChoices = true;
+        } else if ($type == "FR") {
+            $scope.showEntry = true;
+        }
+        
     };
                                            
     $scope.toggleClose = function() {
@@ -43,7 +48,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         $scope.showChoices = false;
     };
                                            
-    $scope.response = function(answer) {
+    $scope.mcResponse = function(answer) {
         if (answer == 0) {
             $scope.dialogue = $response[0];
         } else if (answer == 1) {
@@ -57,6 +62,13 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
            $scope.showChoices = false;
            $scope.showClose = true;
         }
+    }
+                                           
+    $scope.frResponse = function() {
+        $scope.dialogue = $scope.answer + "? That's my favorite color too!";
+        $scope.frAnswer = "";
+        $scope.showEntry = false;
+        $scope.showClose = true;
     }
                                            
 });
