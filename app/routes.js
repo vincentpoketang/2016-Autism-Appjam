@@ -96,6 +96,32 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/api/questions/MC', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.find({'type': 'MC'},function(err, questions) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(questions); // return all users in JSON format
+        });
+    });
+
+    app.get('/api/questions/FR', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.find({'type': 'FR'},function(err, questions) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(questions); // return all users in JSON format
+        });
+    });
+
     app.get('/api/questions/:questionId', function(req, res) {
         // use mongoose to get all users in the database
         Question.findById(req.params.questionId, function(err, question) {
