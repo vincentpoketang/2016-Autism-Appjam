@@ -3,19 +3,25 @@
         width: 100%;
         margin: 5px;
     }
+    .well{
+        border: 3px solid deepskyblue;
+        background: #e6f9ff;
+    }
 </style>
+<link rel="stylesheet" type="text/css" href="../css/spheres.css">
 
-<div class="jumbotron text-center" style="background-image: url(http://cdn.home-designing.com/wp-content/uploads/2009/10/white-and-black-room.jpg); height:600px;">
+<div class="jumbotron text-center" style="background-image: url(http://www.animationinsider.com/wp-content/uploads/2012/02/Katbot-living-room.jpg); height:600px; background-size:cover; position:relative;">
 
-    <div class="well" ng-show="showDialogue">
+    <div class="well" ng-show="showDialogue" style="position:absolute;top:0;width:90%;margin-top:20px;">
         <p>{{dialogue}}</p>
         <button class="btn btn-default" ng-show="showNext" ng-click="toggleQuestion()">Next</button>
         <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
     </div>
     
-    <img src="..\assets\bubble.png" class="box rotate moveDown" height="100" width="100" ng-click="toggleDialogue()">
+    <img src="..\assets\happy.png" class="ball bubble" style="margin-top:150px;opacity:0.9;" ng-click="toggleDialogue()">
+    <img src="http://img2.wikia.nocookie.net/__cb20120629013904/whentheycry/images/f/f3/Exclamation_mark.png" class="box moveDown" style="margin-top:100px;" height="50" width="50" ng-click="toggleDialogue()" ng-show="clickable">
         
-    <div class="well" ng-show="showChoices">
+    <div class="well" ng-show="showChoices" style="position:absolute;bottom:0;width:90%;margin-bottom:20px;">
         <div class="row">
             <div class="col-md-6">
                 <button class="btn btn-default choice" ng-click="mcResponse(0)">{{choice1}}</button>
@@ -33,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="well" ng-show="showEntry">
+    <div class="well" ng-show="showEntry" style="position:absolute;bottom:0;width:90%;margin-bottom:20px;">
         <form>
             <div class="form-group">
                 <label for="yourAnswer">Your answer:</label>
