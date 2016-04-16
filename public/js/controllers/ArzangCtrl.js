@@ -1,11 +1,8 @@
-/**
- * Created by Dooshkukakoo on 4/14/2016.
- */
 angular.module('ArzangCtrl', []).controller('ArzangController', function($scope, $http) {
 
     $request = {
         method: 'GET',
-        url: "http://localhost:3000/api/questions/57103f55b1b79aa3039716b9"
+        url: "http://localhost:3000/api/questions/57104d4ca768a0c8218b9395"
     };
 
     $http($request)
@@ -20,6 +17,36 @@ angular.module('ArzangCtrl', []).controller('ArzangController', function($scope,
         .error(function (data) {
             console.log('ERROR: Could not retrieve questions.');
         });
+		
+	var sending_data = {
+        type : "MA",
+        openingText: "aaaa",
+        questionText: "aaaaaaaaaa",
+        choices:["a", "2", "4", "3"],
+        correctAnswer: 3,
+        response:{
+            0: "a",
+            1: "a",
+            2: "a",
+            3: "a"
+        }
+	};
+		
+	$post = {
+		method: "POST",
+		url: "http://localhost:3000/api/questions",
+		data: sending_data
+	};
+	
+	$http($post)
+		.success(function (data) {
+			console.log("SUCCESS: test post please ignore");
+            console.log(data);
+
+		})
+		.error(function () {
+			console.log("ERROR: test post failed. fml");
+		})
 
     $scope.toggleDialogue = function() {
         $name = 'Arzang';

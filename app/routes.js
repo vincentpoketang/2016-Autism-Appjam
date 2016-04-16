@@ -1,5 +1,6 @@
 var User = require('./models/user');
 var Question = require('./models/question');
+var Conversation = require('./models/conversation');
 var mongoose = require('mongoose');
 
 module.exports = function(app) {
@@ -136,6 +137,8 @@ module.exports = function(app) {
     });
 
     app.post('/api/questions', function(req, res) {
+        console.log("in q route");
+        console.log(req.body);
         // use mongoose to get all users in the database
         Question.create(req.body, function(err, question) {
 
@@ -144,7 +147,22 @@ module.exports = function(app) {
             if (err)
                 res.send(err);
 
-            res.json(question); // return all users in JSON format
+            res.json(question); // return all questions in JSON format
+        });
+    });
+	
+	// Conversation Routes
+	app.post('/api/conversations', function(req, res) {
+        console.log("in route");
+        console.log(req.body);
+        // use mongoose to get all users in the database
+        Conversation.create(req.body, function(err, conversation) {
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(conversation); // return all conversations in JSON format
         });
     });
 
@@ -153,5 +171,4 @@ module.exports = function(app) {
 	app.get('*', function(req, res) {
 		res.sendfile('./public/index.html');
 	});
-
 };
