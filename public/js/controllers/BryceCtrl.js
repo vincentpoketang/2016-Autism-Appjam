@@ -1,5 +1,16 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
                   
+                                           
+    $date = new Date();
+    $hours = $date.getHours();
+    if ($hours >= 6 && $hours <= 20) {
+        $audio = new Audio("../audio/BubbleBuddyDay.mp3");
+    } else {
+        $audio = new Audio("../audio/BubbleBuddyNight.mp3");
+    }
+    $audio.loop = true;
+    $audio.play();
+                                           
     $scope.clickable = true;
             
     // Count down to next question/conversation.
