@@ -1,12 +1,13 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
                   
     $scope.clickable = true;
-                                           
+            
+    // Count down to next question/conversation.
     $scope.countDown = 10;
     setInterval(function(){
-        console.log("Countdown: " + $scope.countDown);
         $scope.countDown--;
         $scope.$apply();
+        // Pause countdown if dialogue opens.
         if ($scope.countDown == 0 || $scope.showDialogue || $scope.clickable) {
             if ($scope.countDown == 0) {
                 $scope.clickable = true;
@@ -14,13 +15,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.countDown = 10;
         }
     }, 1000);
-                                        
-    $scope.toggleDialogue = function() {
-        if (!$scope.clickable) {
-            return;
-        } else {
-            $scope.clickable = false;
-        }
+                                           
+    $getQuestion = function() {
         $request = {
             method: 'GET',
             url: "http://localhost:3000/api/questions/"
@@ -41,13 +37,51 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $text = 'Hello ' + $name + '! ' + $openingText;
             $scope.showDialogue = true;
             $scope.showChoices = false;
-            $scope.showNext = true;
+            $scope.showQuestion = true;
             $scope.showClose = false;
             $scope.dialogue = $text;
+            })
+        .error(function (data) {
+              console.log('Error: Could not retrieve questions.');
+          });
+    }
+                                           
+    $getConversation = function() {
+        $request = {
+            method: 'GET',
+            url: "http://localhost:3000/api/conversations/"
+        };
+        $http($request)
+        .success(function (data) {
+            // Get random conversation from database.
+            $index = Math.floor(Math.random()*data.length);
+            $type = data[$index].type;
+            $mood = data[$index].mood;
+            $time = data[$index].time;
+            $conversation = data[$index].text;
+
+            $scope.showDialogue = true;
+            $scope.showChoices = false;
+            $scope.showConversation = true;
+            $scope.showClose = false;
+            $conversationIndex = 0;
+            $scope.dialogue = $conversation[$conversationIndex];
         })
         .error(function (data) {
-          console.log('Error: Could not connect to the database.');
+              console.log('Error: Could not retrieve conversations.');
         });
+    }
+                                        
+    $scope.toggleDialogue = function() {
+        if ($scope.clickable) {
+            $scope.clickable = false;
+            $retrieve = Math.floor(Math.random()*2);
+            if ($retrieve == 0) {
+                $getQuestion();
+            } else {
+               $getConversation();
+            }
+        }
     };
                                            
     $scope.toggleQuestion = function() {
@@ -77,8 +111,17 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showEntry = true;
         }
         $scope.dialogue = $questionText;
-        $scope.showNext = false;
+        $scope.showQuestion = false;
     };
+                                           
+    $scope.toggleConversation = function() {
+        // Move on to next part of conversation.
+        if ($conversationIndex == $conversation.length-2) {
+            $scope.showConversation = false;
+            $scope.showClose = true;
+        }
+        $scope.dialogue = $conversation[++$conversationIndex];
+    }
                                            
     $scope.toggleClose = function() {
         // Show close button.
