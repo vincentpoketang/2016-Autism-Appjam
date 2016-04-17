@@ -3,50 +3,79 @@
         width: 100%;
         margin: 5px;
     }
-    .well{
+    .well {
         border: 3px solid deepskyblue;
         background: #e6f9ff;
+    }
+    .dialogue {
+        position: absolute;
+        top: 0;
+        width: 90%;
+        margin-top: 20px;
+    }
+    .buddy {
+        margin-top: 150px;
+        opacity: 0.9;
+    }
+    .exclamation {
+        position: absolute;
+        right: 40%;
+        top: 10%;
+        margin-top: 100px;
+    }
+    .response {
+        position: absolute;
+        bottom: 0;
+        width: 90%;
+        margin-bottom: 20px;
     }
 </style>
 <link rel="stylesheet" type="text/css" href="../css/spheres.css">
 
 <div class="jumbotron text-center" style="background-image: url(http://www.animationinsider.com/wp-content/uploads/2012/02/Katbot-living-room.jpg); height:600px; background-size:cover; position:relative;">
-
-    <div class="well" ng-show="showDialogue" style="position:absolute;top:0;width:90%;margin-top:20px;">
-        <p>{{dialogue}}</p>
-        <button class="btn btn-default" ng-show="showNext" ng-click="toggleQuestion()">Next</button>
-        <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
+    
+    <div class="row dialogue">
+        <div class="well" ng-show="showDialogue">
+            <p>{{dialogue}}</p>
+            <button class="btn btn-default" ng-show="showQuestion" ng-click="toggleQuestion()">Next</button>
+            <button class="btn btn-default" ng-show="showConversation" ng-click="toggleConversation()">Next</button>
+            <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
+        </div>
     </div>
     
-    <img src="..\assets\happy.png" class="ball bubble" style="margin-top:150px;opacity:0.9;" ng-click="toggleDialogue()">
-    <img src="http://img2.wikia.nocookie.net/__cb20120629013904/whentheycry/images/f/f3/Exclamation_mark.png" class="box moveDown" style="margin-top:100px;" height="50" width="50" ng-click="toggleDialogue()" ng-show="clickable">
-        
-    <div class="well" ng-show="showChoices" style="position:absolute;bottom:0;width:90%;margin-bottom:20px;">
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="mcResponse(0)">{{choice1}}</button>
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="mcResponse(1)">{{choice2}}</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="mcResponse(2)">{{choice3}}</button>
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="mcResponse(3)">{{choice4}}</button>
-            </div>
-        </div>
+    <div class="row">
+        <img src="..\assets\happy.png" class="ball bubble buddy" ng-click="toggleDialogue()">
+        <img src="..\assets\exclamation-mark-2.png" class="box moveDown exclamation" height="50" width="50" ng-click="toggleDialogue()" ng-show="clickable">
     </div>
-    <div class="well" ng-show="showEntry" style="position:absolute;bottom:0;width:90%;margin-bottom:20px;">
-        <form>
-            <div class="form-group">
-                <label for="yourAnswer">Your answer:</label>
-                <input ng-model="frAnswer" type="text" class="form-control" id="yourAnswer" placeholder="Enter your answer here">
+    
+    <div class="row response">
+        <div class="well" ng-show="showChoices">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(0)">{{choice1}}</button>
                 </div>
-            <button type="submit" class="btn btn-default" ng-click="frResponse()">Submit</button>
-        </form>
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(1)">{{choice2}}</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(2)">{{choice3}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(3)">{{choice4}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="well" ng-show="showEntry">
+            <form>
+                <div class="form-group">
+                    <label for="yourAnswer">Your answer:</label>
+                    <input ng-model="frAnswer" type="text" class="form-control" id="yourAnswer" placeholder="Enter your answer here">
+                    </div>
+                <button type="submit" class="btn btn-default" ng-click="frResponse()">Submit</button>
+            </form>
+        </div>
     </div>
 
 </div>
