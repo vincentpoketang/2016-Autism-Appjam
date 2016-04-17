@@ -52,16 +52,22 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                                            
     $scope.toggleQuestion = function() {
         // Generate random math problem.
-        if ($type == "MA") {
-            $varX = Math.floor((Math.random() * 17) + 4);
-            $varY = Math.floor((Math.random() * $varX+1));
-            $maSolution = $varX - $varY;
+        if ($type == "MA-" || $type == "MA+") {
+            if ($type == "MA-") {
+                $varX = Math.floor((Math.random() * 17) + 4);
+                $varY = Math.floor((Math.random() * $varX+1));
+                $maSolution = $varX - $varY;
+            } else if ($type == "MA+") {
+                $varX = Math.floor((Math.random() * 10));
+                $varY = Math.floor((Math.random() * 10));
+                $maSolution = $varX + $varY;
+            }
             $choices = $generateRandomArray(4, 0, $maSolution);
             $questionText = $questionText.replace("?_X", $varX);
             $questionText = $questionText.replace("?_Y", $varY);
         }
         // Show choices and user input.
-        if ($type == "MC" || $type == "MA") {
+        if ($type == "MC" || $type == "MA-" || $type == "MA+") {
             $scope.choice1 = $choices[0];
             $scope.choice2 = $choices[1];
             $scope.choice3 = $choices[2];
@@ -82,7 +88,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                                            
     $scope.mcResponse = function(answer) {
         // Generate responses for multiple choice.
-        if ($type == "MA") {
+        if ($type == "MA-" || $type == "MA+") {
             if (answer == $choices.indexOf($maSolution)) {
                 $res = $response[1].replace("?_X", $varX);
                 $res = $res.replace("?_Y", $varY);
