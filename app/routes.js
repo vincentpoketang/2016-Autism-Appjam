@@ -48,6 +48,25 @@ module.exports = function(app) {
         });
     });
 
+    app.put('/api/users/favorites/:userId', function(req, res) {
+        // use mongoose to get all users in the database
+        User.findById(req.params.userId, function(err, user) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            var newFavorites = user.favorites;
+            for (var key in req.body.favorites) {
+                newFavorites[key] = req.body.favorites[key];
+            }
+
+            user.update({favorites: newFavorites});
+            res.json(user); // return all users in JSON format
+        });
+    });
+
     app.put('/api/users/:userId', function(req, res) {
         // use mongoose to get all users in the database
         User.findByIdAndUpdate(req.params.userId, req.body, function(err, users) {
