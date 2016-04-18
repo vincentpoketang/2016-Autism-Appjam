@@ -48,22 +48,16 @@ module.exports = function(app) {
         });
     });
 
-    app.put('/api/users/favorites/:userId', function(req, res) {
+    app.post('/api/users/multiple', function(req, res) {
         // use mongoose to get all users in the database
-        User.findById(req.params.userId, function(err, user) {
+        User.collection.insert(req.body, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
             if (err)
                 res.send(err);
 
-            var newFavorites = user.favorites;
-            for (var key in req.body.favorites) {
-                newFavorites[key] = req.body.favorites[key];
-            }
-
-            user.update({favorites: newFavorites});
-            res.json(user); // return all users in JSON format
+            res.json(users); // return all users in JSON format
         });
     });
 
@@ -160,6 +154,19 @@ module.exports = function(app) {
         });
     });
 
+    app.post('/api/questions/multiple', function(req, res) {
+        // use mongoose to get all users in the database
+        Question.collection.insert(req.body, function(err, question) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(question); // return all questions in JSON format
+        });
+    });
+
     app.get('/api/conversations', function(req, res) {
         // use mongoose to get all users in the database
         Conversation.find(function(err, conversations) {
@@ -183,6 +190,19 @@ module.exports = function(app) {
                 res.send(err);
             console.log("pew");
             res.json(conversation); // return all conversations in JSON format
+        });
+    });
+
+    app.post('/api/conversations/multiple', function(req, res) {
+        // use mongoose to get all users in the database
+        Conversation.collection.insert(req.body, function(err, conversation) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(conversation); // return all questions in JSON format
         });
     });
 
