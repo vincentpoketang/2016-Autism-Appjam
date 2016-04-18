@@ -7,5 +7,5 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('User', {
 	name : {type : String, default: ''},
 	correctMathAnswers: Number,
-	favorites: [{key: Schema.Types.Mixed, value: Schema.Types.Mixed }]
+	favorites: Object
 });

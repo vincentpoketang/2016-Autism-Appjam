@@ -1,9 +1,26 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
-                  
+           
+    // Get user settings.
+    $request = {
+        method: 'GET',
+        url: "http://localhost:3000/api/users/"
+    };
+    $http($request)
+        .success(function (data) {
+            console.log(data);
+            $name = data.name;
+            $correctMathAnswers = data.correctMathAnswers;
+            $favorites = data.favorites;
+        })
+        .error(function (data) {
+            console.log('Error: Could not retrieve user settings.');
+        });
+    }
                                            
+    // Start music.
     $date = new Date();
     $hours = $date.getHours();
-    if ($hours >= 6 && $hours <= 20) {
+    if ($hours >= 5 && $hours <= 19) {
         $audio = new Audio("../audio/BubbleBuddyDay.mp3");
     } else {
         $audio = new Audio("../audio/BubbleBuddyNight.mp3");
