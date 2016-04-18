@@ -6,16 +6,14 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         url: "http://localhost:3000/api/users/"
     };
     $http($request)
-        .success(function (data) {
-            console.log(data);
-            $name = data.name;
-            $correctMathAnswers = data.correctMathAnswers;
-            $favorites = data.favorites;
-        })
-        .error(function (data) {
-            console.log('Error: Could not retrieve user settings.');
-        });
-    }
+    .success(function (data) {
+        $userID = data[0]._id;
+        $userName = data[0].name;
+        $userData = data[0].data;
+    })
+    .error(function (data) {
+        console.log('Error: Could not retrieve user settings.');
+    });
                                            
     // Start music.
     $date = new Date();
@@ -59,6 +57,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $correctAnswer = data[$index].correctAnswer;
             $response = data[$index].response;
             $choices = data[$index].choices;
+            $dataLoad = data[$index].dataLoad;
 
             // Generate opening dialogue.
             $name = 'Bryce';
@@ -167,6 +166,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                 $scope.dialogue = $res;
                 $scope.showChoices = false;
                 $scope.showClose = true;
+                $load($dataLoad, $userData["correctMathAnswers"] + 1);
             } else {
                 $res = $response[0].replace("?_X", $varX);
                 $res = $res.replace("?_Y", $varY);
@@ -194,9 +194,26 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         // Generate responses for free response.
         $response = $response[1].replace("?_C", $scope.frAnswer.toLowerCase());
         $scope.dialogue = $response;
-        $scope.frAnswer = "";
         $scope.showEntry = false;
         $scope.showClose = true;
+        $load($dataLoad, $scope.frAnswer);
+    }
+                                           
+    $load = function(property, value) {
+        $userData[property] = value;
+        $scope.frAnswer = "";
+        $request = {
+           method: 'PUT',
+           url: "http://localhost:3000/api/users/" + $userID,
+           data: {data: $userData}
+        };
+        $http($request)
+        .success(function (data) {
+            console.log('Updated user setting ' + property + ' to ' + value + '.');
+        })
+        .error(function (data) {
+            console.log('Error: Could not modify user settings.');
+        });
     }
                                            
     $generateRandomArray = function(n, min, max) {

@@ -17,5 +17,6 @@ module.exports = mongoose.model('Question', {
         1: String,
         2: String,
         3: String
-    }
+    },
+    dataLoad: {type : String}
 });
