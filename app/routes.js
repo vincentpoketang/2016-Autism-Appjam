@@ -37,12 +37,7 @@ module.exports = function(app) {
 
     app.post('/api/users', function(req, res) {
         // use mongoose to get all users in the database
-        var newId = mongoose.Types.ObjectId();
-        var newUser = {
-            _id: newId,
-            name: req.body.name
-        };
-        User.create(newUser, function(err, users) {
+        User.create(req.body, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
@@ -55,10 +50,7 @@ module.exports = function(app) {
 
     app.put('/api/users/:userId', function(req, res) {
         // use mongoose to get all users in the database
-        var updatedUser = {
-            name: req.body.name
-        };
-        User.findByIdAndUpdate(req.params.userId, updatedUser, function(err, users) {
+        User.findByIdAndUpdate(req.params.userId, req.body, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
