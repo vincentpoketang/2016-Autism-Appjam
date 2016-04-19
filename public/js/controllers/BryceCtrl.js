@@ -1,6 +1,10 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
            
-    //.
+                                           
+    ////////////////////////////////
+    // STARTING SCRIPT
+    ///////////////////////////////
+                                           
     $request = {
         method: 'GET',
         url: "http://localhost:3000/api/users/"
@@ -41,6 +45,34 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.countDown = 10;
         }
     }, 1000);
+        
+                                           
+    ////////////////////////////////
+    // DIALOGUE METHODS
+    ///////////////////////////////
+       
+    $scope.toggleDialogue = function() {
+        if ($scope.clickable) {
+            $scope.clickable = false;
+            $retrieve = Math.floor(Math.random()*2);
+            if ($retrieve == 0) {
+                $getQuestion();
+            } else {
+               $getConversation();
+            }
+        }
+    };
+                                           
+    $scope.toggleClose = function() {
+        // Show close button.
+        $scope.showDialogue = false;
+        $scope.showChoices = false;
+    };
+
+                                           
+    ////////////////////////////////
+    // QUESTION METHODS
+    ///////////////////////////////
                                            
     $getQuestion = function() {
         $request = {
@@ -73,44 +105,6 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
           });
     }
                                            
-    $getConversation = function() {
-        $request = {
-            method: 'GET',
-            url: "http://localhost:3000/api/conversations/"
-        };
-        $http($request)
-        .success(function (data) {
-            // Get random conversation from database.
-            $index = Math.floor(Math.random()*data.length);
-            $type = data[$index].type;
-            $mood = data[$index].mood;
-            $time = data[$index].time;
-            $conversation = data[$index].text;
-
-            $scope.showDialogue = true;
-            $scope.showChoices = false;
-            $scope.showConversation = true;
-            $scope.showClose = false;
-            $conversationIndex = 0;
-            $scope.dialogue = $conversation[$conversationIndex];
-        })
-        .error(function (data) {
-              console.log('Error: Could not retrieve conversations.');
-        });
-    }
-                                        
-    $scope.toggleDialogue = function() {
-        if ($scope.clickable) {
-            $scope.clickable = false;
-            $retrieve = Math.floor(Math.random()*2);
-            if ($retrieve == 0) {
-                $getQuestion();
-            } else {
-               $getConversation();
-            }
-        }
-    };
-                                           
     $scope.toggleQuestion = function() {
         // Generate random math problem.
         if ($type == "MA-" || $type == "MA+") {
@@ -140,6 +134,43 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         $scope.dialogue = $questionText;
         $scope.showQuestion = false;
     };
+              
+                                           
+    ////////////////////////////////
+    // CONVERSATION METHODS
+    ///////////////////////////////
+                                           
+    $getConversation = function() {
+        $request = {
+            method: 'GET',
+            url: "http://localhost:3000/api/conversations/"
+        };
+        $http($request)
+        .success(function (data) {
+            // Get random conversation from database.
+            while (true) {
+                $index = Math.floor(Math.random()*data.length);
+                $type = data[$index].type;
+                $mood = data[$index].mood;
+                $time = data[$index].time;
+                $property = data[$index].property;
+                $conversation = data[$index].text;
+                if ($property == "None" || $userData.hasOwnProperty($property)) {
+                    break;
+                }
+            }
+
+            $scope.showDialogue = true;
+            $scope.showChoices = false;
+            $scope.showConversation = true;
+            $scope.showClose = false;
+            $conversationIndex = 0;
+            $scope.dialogue = $conversation[$conversationIndex];
+        })
+        .error(function (data) {
+              console.log('Error: Could not retrieve conversations.');
+        });
+    }
                                            
     $scope.toggleConversation = function() {
         // Move on to next part of conversation.
@@ -152,17 +183,16 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         // Check if there are any variables needed to be replaced.
         if ($c.includes("?_")) {
             $replace = $c.match(/\?_\w+/g);
-            $scope.dialogue = $c.replace($replace, $userData[$replace[0].substring(2)]);
+            $scope.dialogue = $c.replace($replace, $userData[$property]);
         } else {
             $scope.dialogue = $c;
         }
     }
+         
                                            
-    $scope.toggleClose = function() {
-        // Show close button.
-        $scope.showDialogue = false;
-        $scope.showChoices = false;
-    };
+    ////////////////////////////////
+    // RESPONSE METHODS
+    ///////////////////////////////
                                            
     $scope.mcResponse = function(answer) {
         // Generate responses for multiple choice.
@@ -206,6 +236,11 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         $scope.showClose = true;
         $load($dataLoad, $scope.frAnswer);
     }
+      
+                                           
+    ////////////////////////////////
+    // HELPER METHODS
+    ///////////////////////////////
                                            
     $load = function(property, value) {
         $userData[property] = value;
