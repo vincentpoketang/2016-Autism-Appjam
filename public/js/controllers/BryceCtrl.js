@@ -1,6 +1,6 @@
 angular.module('BryceCtrl', []).controller('BryceController', function($scope, $http) {
            
-    // Get user settings.
+    //.
     $request = {
         method: 'GET',
         url: "http://localhost:3000/api/users/"
@@ -147,7 +147,15 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showConversation = false;
             $scope.showClose = true;
         }
-        $scope.dialogue = $conversation[++$conversationIndex];
+        // Iterate to next line.
+        $c = $conversation[++$conversationIndex];
+        // Check if there are any variables needed to be replaced.
+        if ($c.includes("?_")) {
+            $replace = $c.match(/\?_\w+/g);
+            $scope.dialogue = $c.replace($replace, $userData[$replace[0].substring(2)]);
+        } else {
+            $scope.dialogue = $c;
+        }
     }
                                            
     $scope.toggleClose = function() {
@@ -209,7 +217,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         };
         $http($request)
         .success(function (data) {
-            console.log('Updated user setting ' + property + ' to ' + value + '.');
+            console.log('Updated user setting "' + property + '" to "' + value + '".');
         })
         .error(function (data) {
             console.log('Error: Could not modify user settings.');
