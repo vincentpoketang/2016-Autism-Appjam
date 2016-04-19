@@ -3,35 +3,118 @@
         width: 100%;
         margin: 5px;
     }
+    .well {
+        border: 3px solid deepskyblue;
+        background: #e6f9ff;
+        margin:5%;
+    }
+    .dialogue {
+        position: absolute;
+        top: 0;
+        width: 90%;
+        margin-top: 20px;
+    }
+    .buddy {
+        margin-top: 150px;
+        opacity: 0.9;
+    }
+    .exclamation {
+        position: absolute;
+        right: 40%;
+        top: 10%;
+        margin-top: 100px;
+    }
+    .response {
+        position: absolute;
+        bottom: 0;
+        width: 90%;
+        margin-bottom: 20px;
+    }
+    .row {
+        margin:0;
+    }
+    .bryce{
+        float: right;
+        background: none;
+        border: none;
+        box-shadow: none;
+        font-size: -webkit-xxx-large;
+        color: deeppink;
+    }
 </style>
+<link rel="stylesheet" type="text/css" href="../css/spheres.css">
 
-<div class="jumbotron text-center" style="background-image: url(http://cdn.home-designing.com/wp-content/uploads/2009/10/white-and-black-room.jpg); height:600px;">
 
-    <div class="well" ng-show="showDialogue">
-        <p>{{dialogue}}</p>
-        <button class="btn btn-default" ng-show="showNext" ng-click="toggleQuestion()">Next</button>
-        <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
-    </div>
 
-    <img src="..\assets\bubble.png" class="box rotate moveDown" height="100" width="100" ng-click="toggleDialogue()">
+<div class="jumbotron text-center" style="background-image: url(http://www.animationinsider.com/wp-content/uploads/2012/02/Katbot-living-room.jpg); height:750px; padding:5%; background-size:cover; position:relative;">
+    <!-- Button trigger modal -->
+    <button type="button" class="bryce btn btn-lg" data-toggle="modal" data-target="#myModal">
+        <span class="glyphicon glyphicon-volume-down"></span>
+    </button>
 
-    <div class="well" ng-show="showChoices">
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="response(0)">{{choice1}}</button>
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="response(1)">{{choice2}}</button>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Turn music off?</h4>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-success" onclick="$audio.play()">Music On</button>
+                    <button type="button" class="btn btn-danger" onclick="$audio.pause()">Music Off</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="response(2)">{{choice3}}</button>
-            </div>
-            <div class="col-md-6">
-                <button class="btn btn-default choice" ng-click="response(3)">{{choice4}}</button>
-            </div>
+    </div>
+
+    <div class="row dialogue">
+        <div class="well" ng-show="showDialogue">
+            <p>{{dialogue}}</p>
+            <button class="btn btn-default" ng-show="showQuestion" ng-click="toggleQuestion()">Next</button>
+            <button class="btn btn-default" ng-show="showConversation" ng-click="toggleConversation()">Next</button>
+            <button class="btn btn-default" ng-show="showClose" ng-click="toggleClose()">Close</button>
         </div>
     </div>
+
+    <div class="row">
+        <img src="..\assets\happy.png" class="ball bubble buddy" ng-click="toggleDialogue()">
+        <img src="..\assets\exclamation-mark-2.png" class="box moveDown exclamation" height="50" width="50" ng-click="toggleDialogue()" ng-show="clickable">
+    </div>
+
+    <div class="row response">
+        <div class="well" ng-show="showChoices">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(0)">{{choice1}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(1)">{{choice2}}</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(2)">{{choice3}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-default choice" ng-click="mcResponse(3)">{{choice4}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="well" ng-show="showEntry">
+            <form>
+                <div class="form-group">
+                    <label for="yourAnswer">Your answer:</label>
+                    <input ng-model="frAnswer" type="text" class="form-control" id="yourAnswer" placeholder="Enter your answer here">
+                </div>
+                <button type="submit" class="btn btn-default" ng-click="frResponse()">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
 
 </div>
