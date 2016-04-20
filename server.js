@@ -13,7 +13,8 @@ var db = require('./config/db');
 var port = process.env.PORT || 3000; // set our port
 // mongoose.connect(db.url); // connect to our mongoDB database (commented out after you enter in your own credentials)
 //connect to mongo
-mongoose.connect('mongodb://localhost:27017/testapp');
+mongoose.connect('mongodb://admin:password@ds013981.mlab.com:13981/bubblebuddy');
+//mongoose.connect('mongodb://localhost:27017/testapp');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(callback){
