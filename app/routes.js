@@ -206,6 +206,19 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/api/conversations/:mood/:time', function(req, res) {
+        // use mongoose to get all users in the database
+        Conversation.find({'mood': req.params.mood, 'time': req.params.time},function(err, conversations) {
+
+            // if there is an error retrieving, send the error.
+            // nothing after res.send(err) will execute
+            if (err)
+                res.send(err);
+
+            res.json(conversations); // return all users in JSON format
+        });
+    });
+
 	// frontend routes =========================================================
 	// route to handle all angular requests
 	app.get('*', function(req, res) {

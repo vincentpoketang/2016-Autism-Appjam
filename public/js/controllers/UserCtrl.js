@@ -3,10 +3,12 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	////////////////////////////////
 	// STARTING SCRIPT
 	///////////////////////////////
-	$scope.currentMood = Math.random() <= 0.5 ? "..\\assets\\Mad.png" : "..\\assets\\Sad.png";
+	$emotions = ["..\\assets\\mad.png", "..\\assets\\sad.png", "..\\assets\\scared surprise.png", "..\\assets\\happy.png", "..\\assets\\disgust.png" ]
+	$scope.currentMood = $emotions[Math.floor(Math.random()*$emotions.length)];
 	console.log($scope.currentMood);
-
+	$lastMood="";
 	$moodCounter = 0;
+	$time = '';
 
 	$request = {
 		method: 'GET',
@@ -27,8 +29,10 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	$hours = $date.getHours();
 	if ($hours >= 5 && $hours <= 19) {
 		$audio = new Audio("../audio/BubbleBuddyDay.mp3");
+		$time = 'day';
 	} else {
 		$audio = new Audio("../audio/BubbleBuddyNight.mp3");
+		$time = 'night';
 	}
 	$audio.loop = true;
 	$audio.play();
@@ -58,19 +62,32 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		if ($scope.clickable) {
 			$scope.clickable = false;
 			$retrieve = Math.floor(Math.random()*2);
-			$moodCounter++;
-			if($moodCounter > 5)
-				$scope.currentMood = "..\\assets\\happy.png";
 			if ($retrieve == 0) {
 				$getQuestion();
 			} else {
-				$getConversation();
+				$moodToSend = '';
+				if ($scope.currentMood == "..\\assets\\mad.png")
+					$moodToSend = "angry";
+				else if ($scope.currentMood == "..\\assets\\sad.png")
+					$moodToSend = "sad";
+				else if ($scope.currentMood == "..\\assets\\disgusted.png")
+					$moodToSend = "disgusted";
+				else if ($scope.currentMood == "..\\assets\\scared surprise.png")
+					$moodToSend = "scared";
+				else if ($scope.currentMood == "..\\assets\\happy.png")
+					$moodToSend = "happy";
+
+				$getConversation($moodToSend,$time);
 			}
 		}
 	};
 
 	$scope.toggleClose = function() {
 		// Show close button.
+		$moodCounter++;
+		console.log($moodCounter);
+		if($moodCounter > 5)
+			$scope.currentMood = "..\\assets\\happy.png";
 		$scope.showDialogue = false;
 		$scope.showChoices = false;
 	};
@@ -139,6 +156,8 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		}
 		$scope.dialogue = $questionText;
 		$scope.showQuestion = false;
+		$lastMood = $scope.currentMood;
+		$scope.currentMood = "..\\assets\\thinking.png"
 	};
 
 
@@ -146,10 +165,10 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	// CONVERSATION METHODS
 	///////////////////////////////
 
-	$getConversation = function() {
+	$getConversation = function(mood,time) {
 		$request = {
 			method: 'GET',
-			url: "http://localhost:3000/api/conversations/"
+			url: "http://localhost:3000/api/conversations/" + mood + "/" + time
 		};
 		$http($request)
 			.success(function (data) {
@@ -211,6 +230,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 				$scope.showChoices = false;
 				$scope.showClose = true;
 				$load($dataLoad, $userData["correctMathAnswers"] + 1);
+				$scope.currentMood = $lastMood;
 			} else {
 				$res = $response[0].replace("?_X", $varX);
 				$res = $res.replace("?_Y", $varY);
@@ -230,6 +250,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 			if (answer == $correctAnswer) {
 				$scope.showChoices = false;
 				$scope.showClose = true;
+				$scope.currentMood = $lastMood;
 			}
 		}
 	}
@@ -241,6 +262,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		$scope.showEntry = false;
 		$scope.showClose = true;
 		$load($dataLoad, $scope.frAnswer);
+		$scope.currentMood = $lastMood;
 	}
 
 

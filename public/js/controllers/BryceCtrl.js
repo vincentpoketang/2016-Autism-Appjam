@@ -76,6 +76,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             } else {
                $getConversation();
             }
+
         }
     };
                                            
