@@ -2,7 +2,7 @@
     display: inline-block;
     width: 150px;
     height: 150px;
-    border-radius: 100%;
+    /*border-radius: 100%;*/
     position: relative;
     background: radial-gradient(circle at bottom, #81e8f6, #76deef 10%, #055194 80%, #062745 100%); }
 .ball:before {
@@ -44,7 +44,8 @@
 .ball.plain:before, .ball.plain:after {
     display: none; }
 .ball.bubble {
-    background: radial-gradient(circle at 50% 55%, rgba(240, 245, 255, 0.9), rgba(240, 245, 255, 0.9) 40%, rgba(225, 238, 255, 0.8) 60%, rgba(43, 130, 255, 0.4));
+    /*background: radial-gradient(circle at 50% 55%, rgba(240, 245, 255, 0.9), rgba(240, 245, 255, 0.9) 40%, rgba(225, 238, 255, 0.8) 60%, rgba(43, 130, 255, 0.4))*/
+    background: transparent;
     -webkit-animation: bubble-anim 2s ease-out infinite;
     animation: bubble-anim 2s ease-out infinite; }
 .ball.bubble:before {

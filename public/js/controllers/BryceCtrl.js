@@ -11,9 +11,25 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     };
     $http($request)
     .success(function (data) {
-        $userID = data[0]._id;
-        $userName = data[0].name;
-        $userData = data[0].data;
+        if (data.length == 0) {
+            $type = "FR";
+            $openingText = "Hello!";
+            $questionText = "What is your name?";
+            $response = { "0" : "",
+                          "1" : "Cool!",
+                          "2" : "",
+                          "3" : "" };
+            $dataLoad = "NEW_USER";
+            $scope.showDialogue = true;
+            $scope.showChoices = false;
+            $scope.showQuestion = true;
+            $scope.showClose = false;
+            $scope.dialogue = $openingText;
+        } else {
+            $userID = data[0]._id;
+            $userName = data[0].name;
+            $userData = data[0].data;
+        }
     })
     .error(function (data) {
         console.log('Error: Could not retrieve user settings.');
@@ -155,11 +171,10 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                 $time = data[$index].time;
                 $property = data[$index].property;
                 $conversation = data[$index].text;
-                if ($property == "None" || $userData.hasOwnProperty($property)) {
+                if ($property == null || $userData.hasOwnProperty($property)) {
                     break;
                 }
             }
-
             $scope.showDialogue = true;
             $scope.showChoices = false;
             $scope.showConversation = true;
@@ -234,13 +249,37 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         $scope.dialogue = $response;
         $scope.showEntry = false;
         $scope.showClose = true;
-        $load($dataLoad, $scope.frAnswer);
+        if ($dataLoad != null && $dataLoad != "NEW_USER") {
+            $load($dataLoad, $scope.frAnswer.toLowerCase());
+        } else if ($dataLoad == "NEW_USER") {
+            $createNewUser();
+        }
     }
       
                                            
     ////////////////////////////////
     // HELPER METHODS
     ///////////////////////////////
+                                           
+    $createNewUser = function() {
+        $request = {
+            method: 'POST',
+            url: "http://localhost:3000/api/users/",
+            data: { name: $scope.frAnswer,
+                    data: {correctMathAnswers: 0} }
+        };
+        $http($request)
+            .success(function (data) {
+            $userID = data._id;
+            $userName = data.name;
+            $userData = data.data;
+            console.log('Created new user "' + $scope.frAnswer + '".');
+            $scope.frAnswer = "";
+        })
+            .error(function (data) {
+            console.log('Error: Could not modify user settings.');
+        });
+    }
                                            
     $load = function(property, value) {
         $userData[property] = value;
