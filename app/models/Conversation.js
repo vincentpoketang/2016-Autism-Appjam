@@ -5,6 +5,6 @@ var mongoose = require('mongoose');
 module.exports = mongoose.model('Conversation', {
     mood : {type : String},
     time: {type : String},
-    property: (type : String},
+    property: {type : String},
     text : []
 });
