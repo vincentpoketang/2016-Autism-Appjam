@@ -88,7 +88,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
 					$moodToSend = "angry";
 				else if ($scope.currentMood == "..\\assets\\sad.png")
 					$moodToSend = "sad";
-				else if ($scope.currentMood == "..\\assets\\disgusted.png")
+				else if ($scope.currentMood == "..\\assets\\disgust.png")
 					$moodToSend = "disgusted";
 				else if ($scope.currentMood == "..\\assets\\scared surprise.png")
 					$moodToSend = "scared";
@@ -102,7 +102,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
 	$scope.toggleClose = function() {
 		// Show close button.
 		$moodCounter++;
-		if($moodCounter > 5)
+		if($moodCounter > 3)
 			$scope.currentMood = "..\\assets\\happy.png";
 		$scope.showDialogue = false;
 		$scope.showChoices = false;
@@ -137,10 +137,12 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showQuestion = true;
             $scope.showClose = false;
             $scope.dialogue = $text;
-            })
+            console.log("Question received:");
+            console.log(data);
+        })
         .error(function (data) {
               console.log('Error: Could not retrieve questions.');
-          });
+        });
     }
                                            
     $scope.toggleQuestion = function() {
@@ -204,6 +206,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showClose = false;
             $conversationIndex = 0;
             $scope.dialogue = $conversation[$conversationIndex];
+            console.log("Question received:");
+            console.log(data);
         })
         .error(function (data) {
               console.log('Error: Could not retrieve conversations.');
