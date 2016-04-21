@@ -4,6 +4,13 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     ////////////////////////////////
     // STARTING SCRIPT
     ///////////////////////////////
+               
+    $emotions = ["..\\assets\\mad.png", "..\\assets\\sad.png", "..\\assets\\scared surprise.png", "..\\assets\\happy.png", "..\\assets\\disgust.png" ]
+    $scope.currentMood = $emotions[Math.floor(Math.random()*$emotions.length)];
+    console.log('Current mood: ' + $scope.currentMood);
+    $lastMood="";
+    $moodCounter = 0;
+    $time = '';
                                            
     $request = {
         method: 'GET',
@@ -13,10 +20,10 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     .success(function (data) {
         if (data.length == 0) {
             $type = "FR";
-            $openingText = "Hello!";
+            $openingText = "Hello! My name is Bubble J. Buddy. Welcome to Bubble Buddy!";
             $questionText = "What is your name?";
             $response = { "0" : "",
-                          "1" : "Cool!",
+                          "1" : "Cool! I hope we get to know each other better!",
                           "2" : "",
                           "3" : "" };
             $dataLoad = "NEW_USER";
@@ -38,15 +45,17 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     // Start music.
     $date = new Date();
     $hours = $date.getHours();
-    if ($hours >= 5 && $hours <= 19) {
+    if ($hours >= 5 && $hours <= 18) {
         $audio = new Audio("../audio/BubbleBuddyDay.mp3");
+        $time = 'day';
     } else {
         $audio = new Audio("../audio/BubbleBuddyNight.mp3");
+        $time = 'night';
     }
     $audio.loop = true;
     $audio.play();
                                            
-    $scope.clickable = true;
+    $scope.clickable = false;
             
     // Count down to next question/conversation.
     $scope.countDown = 10;
@@ -68,24 +77,37 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     ///////////////////////////////
        
     $scope.toggleDialogue = function() {
-        if ($scope.clickable) {
-            $scope.clickable = false;
-            $retrieve = Math.floor(Math.random()*2);
-            if ($retrieve == 0) {
-                $getQuestion();
-            } else {
-               $getConversation();
-            }
-
-        }
+		if ($scope.clickable) {
+			$scope.clickable = false;
+			$retrieve = Math.floor(Math.random()*2);
+			if ($retrieve == 0) {
+				$getQuestion();
+			} else {
+				$moodToSend = '';
+				if ($scope.currentMood == "..\\assets\\mad.png")
+					$moodToSend = "angry";
+				else if ($scope.currentMood == "..\\assets\\sad.png")
+					$moodToSend = "sad";
+				else if ($scope.currentMood == "..\\assets\\disgusted.png")
+					$moodToSend = "disgusted";
+				else if ($scope.currentMood == "..\\assets\\scared surprise.png")
+					$moodToSend = "scared";
+				else if ($scope.currentMood == "..\\assets\\happy.png")
+					$moodToSend = "happy";
+				$getConversation($moodToSend,$time);
+			}
+		}
     };
                                            
-    $scope.toggleClose = function() {
-        // Show close button.
-        $scope.showDialogue = false;
-        $scope.showChoices = false;
-    };
-
+	$scope.toggleClose = function() {
+		// Show close button.
+		$moodCounter++;
+		if($moodCounter > 5)
+			$scope.currentMood = "..\\assets\\happy.png";
+		$scope.showDialogue = false;
+		$scope.showChoices = false;
+	};
+                                           
                                            
     ////////////////////////////////
     // QUESTION METHODS
@@ -109,8 +131,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $dataLoad = data[$index].dataLoad;
 
             // Generate opening dialogue.
-            $name = 'Bryce';
-            $text = 'Hello ' + $name + '! ' + $openingText;
+            $text = 'Hello ' + $userName + '! ' + $openingText;
             $scope.showDialogue = true;
             $scope.showChoices = false;
             $scope.showQuestion = true;
@@ -150,6 +171,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         }
         $scope.dialogue = $questionText;
         $scope.showQuestion = false;
+        $lastMood = $scope.currentMood;
+        $scope.currentMood = "..\\assets\\thinking.png"
     };
               
                                            
@@ -157,17 +180,16 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     // CONVERSATION METHODS
     ///////////////////////////////
                                            
-    $getConversation = function() {
+    $getConversation = function(mood, time) {
         $request = {
             method: 'GET',
-            url: "http://localhost:3000/api/conversations/"
+            url: "http://localhost:3000/api/conversations/" + mood + "/" + time
         };
         $http($request)
         .success(function (data) {
             // Get random conversation from database.
             while (true) {
                 $index = Math.floor(Math.random()*data.length);
-                $type = data[$index].type;
                 $mood = data[$index].mood;
                 $time = data[$index].time;
                 $property = data[$index].property;
@@ -221,6 +243,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                 $scope.showChoices = false;
                 $scope.showClose = true;
                 $load($dataLoad, $userData["correctMathAnswers"] + 1);
+                $scope.currentMood = $lastMood;
             } else {
                 $res = $response[0].replace("?_X", $varX);
                 $res = $res.replace("?_Y", $varY);
@@ -238,8 +261,9 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                 $scope.dialogue = $response[3];
             }
             if (answer == $correctAnswer) {
-               $scope.showChoices = false;
-               $scope.showClose = true;
+                $scope.showChoices = false;
+                $scope.showClose = true;
+                $scope.currentMood = $lastMood;
             }
         }
     }
@@ -252,6 +276,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         $scope.showClose = true;
         if ($dataLoad != null && $dataLoad != "NEW_USER") {
             $load($dataLoad, $scope.frAnswer.toLowerCase());
+            $scope.currentMood = $lastMood;
         } else if ($dataLoad == "NEW_USER") {
             $createNewUser();
         }
