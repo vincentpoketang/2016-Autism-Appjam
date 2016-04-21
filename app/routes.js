@@ -3,6 +3,7 @@ var Question = require('./models/question');
 var Conversation = require('./models/conversation');
 var mongoose = require('mongoose');
 
+
 module.exports = function(app) {
 
 	// server routes ===========================================================
@@ -22,15 +23,14 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/api/users/:userId', function(req, res) {
+    app.get('/api/users/:userid', function(req, res) {
         // use mongoose to get all users in the database
-        User.findById(req.params.userId, function(err, users) {
+        User.findOne(req.params.userid, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
             if (err)
                 res.send(err);
-
             res.json(users); // return all users in JSON format
         });
     });
@@ -61,9 +61,9 @@ module.exports = function(app) {
         });
     });
 
-    app.put('/api/users/:userId', function(req, res) {
+    app.put('/api/users/:userid', function(req, res) {
         // use mongoose to get all users in the database
-        User.findByIdAndUpdate(req.params.userId, req.body, function(err, users) {
+        User.findOneAndUpdate(req.params.userid, req.body, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
@@ -75,9 +75,9 @@ module.exports = function(app) {
     });
 
     // sample api route
-    app.delete('/api/users/:userId', function(req, res) {
+    app.delete('/api/users/:userid', function(req, res) {
         // use mongoose to get all users in the database
-        User.findByIdAndRemove(req.params.userId, function(err, users) {
+        User.findOneAndRemove(req.params.userid, function(err, users) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
@@ -128,9 +128,9 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/api/questions/:questionId', function(req, res) {
+    app.get('/api/questions/:questionid', function(req, res) {
         // use mongoose to get all users in the database
-        Question.findById(req.params.questionId, function(err, question) {
+        Question.findOne(req.params.questionid, function(err, question) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
@@ -208,7 +208,7 @@ module.exports = function(app) {
 
     app.get('/api/conversations/:mood/:time', function(req, res) {
         // use mongoose to get all users in the database
-        Conversation.find({'mood': req.params.mood, 'time': req.params.time},function(err, conversations) {
+        Conversation.find({$or: [ {$and: [{ mood: req.params.mood  }, { time: req.params.time }]}, {$and: [{ mood: 'neutral'  }, { time: 'neutral' }]}, {$and: [{ mood: req.params.mood  }, { time: 'neutral' }]}, {$and: [{ mood: 'neutral'  }, { time: req.params.time }]}]},function(err, conversations) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
