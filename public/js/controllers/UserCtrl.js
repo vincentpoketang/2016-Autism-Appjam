@@ -1,11 +1,13 @@
-angular.module('UserCtrl', []).controller('UserController', function($scope, $http, $timeout) {
+angular.module('UserCtrl', []).controller('UserController', function($scope, $http) {
+
 
 	////////////////////////////////
 	// STARTING SCRIPT
 	///////////////////////////////
+
 	$emotions = ["..\\assets\\mad.png", "..\\assets\\sad.png", "..\\assets\\scared surprise.png", "..\\assets\\happy.png", "..\\assets\\disgust.png" ]
 	$scope.currentMood = $emotions[Math.floor(Math.random()*$emotions.length)];
-	console.log($scope.currentMood);
+	console.log('Current mood: ' + $scope.currentMood);
 	$lastMood="";
 	$moodCounter = 0;
 	$time = '';
@@ -16,9 +18,25 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	};
 	$http($request)
 		.success(function (data) {
-			$userID = data[0]._id;
-			$userName = data[0].name;
-			$userData = data[0].data;
+			if (data.length == 0) {
+				$type = "FR";
+				$openingText = "Hello! My name is Bubble J. Buddy. Welcome to Bubble Buddy!";
+				$questionText = "What is your name?";
+				$response = { "0" : "",
+					"1" : "Cool! I hope we get to know each other better!",
+					"2" : "",
+					"3" : "" };
+				$dataLoad = "NEW_USER";
+				$scope.showDialogue = true;
+				$scope.showChoices = false;
+				$scope.showQuestion = true;
+				$scope.showClose = false;
+				$scope.dialogue = $openingText;
+			} else {
+				$userID = data[0]._id;
+				$userName = data[0].name;
+				$userData = data[0].data;
+			}
 		})
 		.error(function (data) {
 			console.log('Error: Could not retrieve user settings.');
@@ -27,7 +45,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	// Start music.
 	$date = new Date();
 	$hours = $date.getHours();
-	if ($hours >= 5 && $hours <= 19) {
+	if ($hours >= 5 && $hours <= 18) {
 		$audio = new Audio("../audio/BubbleBuddyDay.mp3");
 		$time = 'day';
 	} else {
@@ -37,7 +55,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	$audio.loop = true;
 	$audio.play();
 
-	$scope.clickable = true;
+	$scope.clickable = false;
 
 	// Count down to next question/conversation.
 	$scope.countDown = 10;
@@ -48,6 +66,8 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		if ($scope.countDown == 0 || $scope.showDialogue || $scope.clickable) {
 			if ($scope.countDown == 0) {
 				$scope.clickable = true;
+				if($moodCounter > 3)
+					$scope.currentMood = "..\\assets\\bubblebuddy-wave.gif";
 			}
 			$scope.countDown = 10;
 		}
@@ -61,6 +81,10 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	$scope.toggleDialogue = function() {
 		if ($scope.clickable) {
 			$scope.clickable = false;
+
+			if($moodCounter > 3)
+				$scope.currentMood = "..\\assets\\happy.png";
+
 			$retrieve = Math.floor(Math.random()*2);
 			if ($retrieve == 0) {
 				$getQuestion();
@@ -70,13 +94,12 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 					$moodToSend = "angry";
 				else if ($scope.currentMood == "..\\assets\\sad.png")
 					$moodToSend = "sad";
-				else if ($scope.currentMood == "..\\assets\\disgusted.png")
+				else if ($scope.currentMood == "..\\assets\\disgust.png")
 					$moodToSend = "disgusted";
 				else if ($scope.currentMood == "..\\assets\\scared surprise.png")
 					$moodToSend = "scared";
 				else if ($scope.currentMood == "..\\assets\\happy.png")
 					$moodToSend = "happy";
-
 				$getConversation($moodToSend,$time);
 			}
 		}
@@ -85,8 +108,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	$scope.toggleClose = function() {
 		// Show close button.
 		$moodCounter++;
-		console.log($moodCounter);
-		if($moodCounter > 5)
+		if($moodCounter > 3)
 			$scope.currentMood = "..\\assets\\happy.png";
 		$scope.showDialogue = false;
 		$scope.showChoices = false;
@@ -115,13 +137,14 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 				$dataLoad = data[$index].dataLoad;
 
 				// Generate opening dialogue.
-				$name = 'Bryce';
-				$text = 'Hello ' + $name + '! ' + $openingText;
+				$text = 'Hello ' + $userName + '! ' + $openingText;
 				$scope.showDialogue = true;
 				$scope.showChoices = false;
 				$scope.showQuestion = true;
 				$scope.showClose = false;
 				$scope.dialogue = $text;
+				console.log("Question received:");
+				console.log(data);
 			})
 			.error(function (data) {
 				console.log('Error: Could not retrieve questions.');
@@ -165,7 +188,7 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 	// CONVERSATION METHODS
 	///////////////////////////////
 
-	$getConversation = function(mood,time) {
+	$getConversation = function(mood, time) {
 		$request = {
 			method: 'GET',
 			url: "http://localhost:3000/api/conversations/" + mood + "/" + time
@@ -175,22 +198,22 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 				// Get random conversation from database.
 				while (true) {
 					$index = Math.floor(Math.random()*data.length);
-					$type = data[$index].type;
 					$mood = data[$index].mood;
 					$time = data[$index].time;
 					$property = data[$index].property;
 					$conversation = data[$index].text;
-					if ($property == "None" || $userData.hasOwnProperty($property)) {
+					if ($property == null || $userData.hasOwnProperty($property)) {
 						break;
 					}
 				}
-
 				$scope.showDialogue = true;
 				$scope.showChoices = false;
 				$scope.showConversation = true;
 				$scope.showClose = false;
 				$conversationIndex = 0;
 				$scope.dialogue = $conversation[$conversationIndex];
+				console.log("Question received:");
+				console.log(data);
 			})
 			.error(function (data) {
 				console.log('Error: Could not retrieve conversations.');
@@ -261,14 +284,38 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		$scope.dialogue = $response;
 		$scope.showEntry = false;
 		$scope.showClose = true;
-		$load($dataLoad, $scope.frAnswer);
-		$scope.currentMood = $lastMood;
+		if ($dataLoad != null && $dataLoad != "NEW_USER") {
+			$load($dataLoad, $scope.frAnswer.toLowerCase());
+			$scope.currentMood = $lastMood;
+		} else if ($dataLoad == "NEW_USER") {
+			$createNewUser();
+		}
 	}
 
 
 	////////////////////////////////
 	// HELPER METHODS
 	///////////////////////////////
+
+	$createNewUser = function() {
+		$request = {
+			method: 'POST',
+			url: "http://localhost:3000/api/users/",
+			data: { name: $scope.frAnswer,
+				data: {correctMathAnswers: 0} }
+		};
+		$http($request)
+			.success(function (data) {
+				$userID = data._id;
+				$userName = data.name;
+				$userData = data.data;
+				console.log('Created new user "' + $scope.frAnswer + '".');
+				$scope.frAnswer = "";
+			})
+			.error(function (data) {
+				console.log('Error: Could not modify user settings.');
+			});
+	}
 
 	$load = function(property, value) {
 		$userData[property] = value;
@@ -302,4 +349,5 @@ angular.module('UserCtrl', []).controller('UserController', function($scope, $ht
 		$numbers.sort(function() { return 0.5 - Math.random() });
 		return $numbers;
 	}
+
 });
