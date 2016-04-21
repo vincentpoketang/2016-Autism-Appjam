@@ -130,7 +130,7 @@ module.exports = function(app) {
 
     app.get('/api/questions/:questionid', function(req, res) {
         // use mongoose to get all users in the database
-        Question.findOne(req.params.userid, function(err, question) {
+        Question.findOne(req.params.questionid, function(err, question) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
