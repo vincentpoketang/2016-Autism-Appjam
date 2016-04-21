@@ -208,7 +208,7 @@ module.exports = function(app) {
 
     app.get('/api/conversations/:mood/:time', function(req, res) {
         // use mongoose to get all users in the database
-        Conversation.find({'mood': req.params.mood, 'time': req.params.time},function(err, conversations) {
+        Conversation.find({$or: [ {$and: [{ mood: req.params.mood  }, { time: req.params.time }]}, {$and: [{ mood: 'neutral'  }, { time: 'neutral' }]}, {$and: [{ mood: req.params.mood  }, { time: 'neutral' }]}, {$and: [{ mood: 'neutral'  }, { time: req.params.time }]}]},function(err, conversations) {
 
             // if there is an error retrieving, send the error.
             // nothing after res.send(err) will execute
