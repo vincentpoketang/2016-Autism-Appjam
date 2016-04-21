@@ -1,18 +1,17 @@
 <style>
 @font-face {
-    font-family: bubblegun;
-    src: url('../fonts/bubblegun.ttf');
+    font-family: bubblegum;
+    src: url('../fonts/KBBubblegum.ttf');
 }
 body {
-    font-family: bubblegun;
-    font-size: 150%;
+    font-family: bubblegum;
 }
 .choice {
     width: 100%;
     margin: 5px;
 }
 .well {
-    border: 3px solid deepskyblue;
+    border: 5px solid deepskyblue;
     background: #e6f9ff;
     margin:5%;
 }
@@ -41,7 +40,7 @@ body {
 .row {
     margin:0;
 }
-.bryce{
+#settings{
     float: right;
     background: none;
     border: none;
@@ -49,26 +48,31 @@ body {
     font-size: -webkit-xxx-large;
     color: deeppink;
 }
+.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th {
+    border: none;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="../css/spheres.css">
         
-    <div class="jumbotron text-center" style="background-image: url('../assets/background.png'); height:750px; padding:5%; background-size:cover; position:relative;">
-        <!-- Button trigger modal -->
-        <button type="button" class="bryce btn btn-lg" data-toggle="modal" data-target="#myModal">
-            <span class="glyphicon glyphicon-volume-down"></span>
+    <div class="jumbotron text-center" style="height:750px; padding:5%; background-size:cover; position:relative;">
+
+        <button type="button" class="btn btn-lg" id="settings" data-toggle="modal" data-target="#myModal">
+            <span class="glyphicon glyphicon-cog"></span>
         </button>
         
-        <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Turn music off?</h4>
+                        <h4 class="modal-title" id="myModalLabel">Settings</h4>
                     </div>
                     <div class="modal-body">
-                        <button type="button" class="btn btn-success" onclick="$audio.play()">Music On</button>
-                        <button type="button" class="btn btn-danger" onclick="$audio.pause()">Music Off</button>
+                        <table class="table table-borderless">
+                            <tr><td>Audio</td><td><button type="button" class="btn btn-success" onclick="$audio.play()">Music On</button> <button type="button" class="btn btn-danger" onclick="$audio.pause()">Music Off</button></td></tr>
+                            <tr><td>Data</td><td><button type="button" class="btn btn-warning" ng-click="resetUserData()">Reset User Data</button></td></tr>
+                        </table>
+                        <small>Bubble Buddy &copy; 2016 BryceLifts<br /><a href="https://bryceliftsblog.wordpress.com" target="_blank">bryceliftsblog.wordpress.com</a></small>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -88,7 +92,7 @@ body {
         
         <div class="row">
             <img ng-src="{{currentMood}}" class="ball bubble buddy" ng-click="toggleDialogue()">
-            <img src="..\assets\exclamation-mark-2.png" class="box moveDown exclamation" height="50" width="50" ng-click="toggleDialogue()" ng-show="clickable">
+            <img src="..\assets\exclamation-mark-2.png" class="box moveDown exclamation" height="80" width="80" ng-click="toggleDialogue()" ng-show="clickable">
         </div>
         
         <div class="row response">

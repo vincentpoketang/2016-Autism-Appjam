@@ -48,9 +48,11 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     if ($hours >= 5 && $hours <= 18) {
         $audio = new Audio("../audio/BubbleBuddyDay.mp3");
         $time = 'day';
+        $('.jumbotron').css("background-image", "url(../assets/background.png)");
     } else {
         $audio = new Audio("../audio/BubbleBuddyNight.mp3");
         $time = 'night';
+        $('.jumbotron').css("background-image", "url(../assets/background-night.png)");
     }
     $audio.loop = true;
     $audio.play();
@@ -138,7 +140,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showClose = false;
             $scope.dialogue = $text;
             console.log("Question received:");
-            console.log(data);
+            console.log(data[$index]);
         })
         .error(function (data) {
               console.log('Error: Could not retrieve questions.');
@@ -206,8 +208,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             $scope.showClose = false;
             $conversationIndex = 0;
             $scope.dialogue = $conversation[$conversationIndex];
-            console.log("Question received:");
-            console.log(data);
+            console.log("Conversation received:");
+            console.log(data[$index]);
         })
         .error(function (data) {
               console.log('Error: Could not retrieve conversations.');
@@ -310,6 +312,20 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
             console.log('Error: Could not modify user settings.');
         });
     }
+
+    $scope.resetUserData = function() {
+        $request = {
+            method: 'DELETE',
+            url: "http://localhost:3000/api/users/" + $userID
+        };
+        $http($request)
+            .success(function (data) {
+                location.reload();
+        })
+            .error(function (data) {
+            console.log('Error: Could not reset user data.');
+        });
+    }
                                            
     $load = function(property, value) {
         $userData[property] = value;
@@ -321,6 +337,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         };
         $http($request)
         .success(function (data) {
+                 console.log(data);
             console.log('Updated user setting "' + property + '" to "' + value + '".');
         })
         .error(function (data) {
