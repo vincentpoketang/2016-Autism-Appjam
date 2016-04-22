@@ -5,7 +5,7 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     // STARTING SCRIPT
     ///////////////////////////////
                
-    $emotions = ["..\\assets\\mad.png", "..\\assets\\sad.png", "..\\assets\\scared surprise.png", "..\\assets\\happy.png", "..\\assets\\disgust.png" ]
+    $emotions = ["..\\assets\\mad.png", "..\\assets\\sad.png", "..\\assets\\scared surprise.png", "..\\assets\\happy.png", "..\\assets\\disgust.png", "..\\assets\\Laughing.png"]
     $scope.currentMood = $emotions[Math.floor(Math.random()*$emotions.length)];
     console.log('Current mood: ' + $scope.currentMood);
     $lastMood="";
@@ -68,6 +68,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
         if ($scope.countDown == 0 || $scope.showDialogue || $scope.clickable) {
             if ($scope.countDown == 0) {
                 $scope.clickable = true;
+                if($moodCounter > 3)
+                    $scope.currentMood = "..\\assets\\bubblebuddy-wave.gif";
             }
             $scope.countDown = 10;
         }
@@ -81,6 +83,10 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
     $scope.toggleDialogue = function() {
 		if ($scope.clickable) {
 			$scope.clickable = false;
+                                           
+            if($moodCounter > 3)
+                $scope.currentMood = "..\\assets\\happy.png";
+                                           
 			$retrieve = Math.floor(Math.random()*2);
 			if ($retrieve == 0) {
 				$getQuestion();
@@ -96,6 +102,8 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
 					$moodToSend = "scared";
 				else if ($scope.currentMood == "..\\assets\\happy.png")
 					$moodToSend = "happy";
+                else if ($scope.currentMood == "..\\assets\\Laughing.png")
+                    $moodToSend = "funny";
 				$getConversation($moodToSend,$time);
 			}
 		}
@@ -276,12 +284,12 @@ angular.module('BryceCtrl', []).controller('BryceController', function($scope, $
                                            
     $scope.frResponse = function() {
         // Generate responses for free response.
-        $response = $response[1].replace("?_C", $scope.frAnswer.toLowerCase());
+        $response = $response[1].replace("?_C", $scope.frAnswer);
         $scope.dialogue = $response;
         $scope.showEntry = false;
         $scope.showClose = true;
         if ($dataLoad != null && $dataLoad != "NEW_USER") {
-            $load($dataLoad, $scope.frAnswer.toLowerCase());
+            $load($dataLoad, $scope.frAnswer);
             $scope.currentMood = $lastMood;
         } else if ($dataLoad == "NEW_USER") {
             $createNewUser();
